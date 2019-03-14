@@ -22,7 +22,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::latest()->get();
+        $posts = Post::first();
 
         return response()->json($posts, 200, [], JSON_NUMERIC_CHECK);
     }
