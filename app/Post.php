@@ -39,7 +39,7 @@ class Post extends Model
      * @var array
      */
     protected $with = [
-        'creator',
+        'user',
         'category'
     ];
 
@@ -95,7 +95,7 @@ class Post extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function creator()
+    public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
