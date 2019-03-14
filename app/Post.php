@@ -2,7 +2,11 @@
 
 namespace App;
 
+use App\Filters\PostFilters;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Schema\Builder;
+use Illuminate\Support\Facades\App;
+use Stevebauman\Purify\Facades\Purify;
 
 /**
  * @method static limit(int $int)
@@ -137,7 +141,7 @@ class Post extends Model
      * @param  Builder       $query
      * @param  PostFilters $filters
      *
-     * @return Builder
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeFilter($query, PostFilters $filters)
     {
