@@ -24,6 +24,8 @@ class PostController extends Controller
     {
         $posts = Post::first();
 
-        return response()->json($posts, 200, [], JSON_NUMERIC_CHECK);
+        return response([
+            "posts" => $posts
+        ]);
     }
 }
