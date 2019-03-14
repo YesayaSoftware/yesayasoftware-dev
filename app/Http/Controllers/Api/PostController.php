@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Post;
 use App\Http\Controllers\Controller;
+use Symfony\Component\HttpFoundation\Response;
 
 class PostController extends Controller
 {
@@ -22,10 +23,10 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::first();
+        $posts = Post::latest()->get();
 
         return response([
-            "posts" => $posts
-        ]);
+            "posts" => ["post_list" => $posts]
+        ], Response::HTTP_ACCEPTED);
     }
 }
