@@ -22,7 +22,7 @@ class Comment extends Model
      *
      * @var array
      */
-    protected $with = ['owner'];
+    protected $with = ['user'];
 
     /**
      * Boot the comment instance.
@@ -45,7 +45,7 @@ class Comment extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function owner()
+    public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
