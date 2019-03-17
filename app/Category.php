@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Traits\FormatsDates;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -10,6 +11,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Category extends Model
 {
+    use FormatsDates;
+
     /**
      * Don't auto-apply mass assignment protection.
      *

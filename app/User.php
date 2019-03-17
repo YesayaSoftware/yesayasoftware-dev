@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Traits\FormatsDates;
 use Laravel\Passport\HasApiTokens;
 use App\Notifications\VerifyEmailQueued;
 use Illuminate\Notifications\Notifiable;
@@ -13,7 +14,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  */
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, Notifiable;
+    use HasApiTokens, Notifiable, FormatsDates;
 
     /**
      * The attributes that are mass assignable.
@@ -40,6 +41,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'created_at' => 'date',
     ];
 
     public function sendEmailVerificationNotification()
