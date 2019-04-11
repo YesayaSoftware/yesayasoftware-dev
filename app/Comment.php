@@ -3,7 +3,10 @@
 namespace App;
 
 use App\Traits\FormatsDates;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Stevebauman\Purify\Facades\Purify;
 
 class Comment extends Model
 {
@@ -17,7 +20,8 @@ class Comment extends Model
     protected $fillable = [
         'body',
         'post_id',
-        'user_id',
+        'created_by',
+        'updated_by'
     ];
 
     /**
@@ -25,7 +29,7 @@ class Comment extends Model
      *
      * @var array
      */
-    protected $with = ['user'];
+    protected $with = ['creator'];
 
     /**
      * Boot the comment instance.
@@ -44,19 +48,29 @@ class Comment extends Model
     }
 
     /**
-     * A comment has an owner.
+     * A post is created by a particular user.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function user()
+    public function creator()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /**
+     * A post is updated by a particular user.
+     *
+     * @return BelongsTo
+     */
+    public function updator()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
     }
 
     /**
      * A comment belongs to a post.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function post()
     {
@@ -133,7 +147,7 @@ class Comment extends Model
     /**
      * Access the body attribute.
      *
-     * @param  string $body
+     * @param string $body
      * @return string
      */
     public function getBodyAttribute($body)

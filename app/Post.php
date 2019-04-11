@@ -4,9 +4,13 @@ namespace App;
 
 use App\Filters\PostFilters;
 use App\Traits\FormatsDates;
+use Exception;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Schema\Builder;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Str;
 use Stevebauman\Purify\Facades\Purify;
 
 /**
@@ -16,9 +20,7 @@ use Stevebauman\Purify\Facades\Purify;
  */
 class Post extends Model
 {
-    use FormatsDates;
-
-    use RecordsActivity;
+    use FormatsDates, RecordsActivity;
 
     /**
      * Don't auto-apply mass assignment protection.
@@ -33,7 +35,8 @@ class Post extends Model
         'comment_count',
         'visits',
         'category_id',
-        'user_id'
+        'created_by',
+        'updated_by',
     ];
 
     /**
@@ -42,8 +45,9 @@ class Post extends Model
      * @var array
      */
     protected $with = [
-        'user',
-        'category'
+        'creator',
+        'updator',
+        'category',
     ];
 
     /**
@@ -86,27 +90,16 @@ class Post extends Model
      */
     public function getThumbnailPathAttribute()
     {
-        if (App::environment('production')) {
+        if (App::environment('production'))
             return $this->thumbnail ? env('AWS_URL') . $this->thumbnail : asset('img/post-thumbnail.jpg');
-        } else {
+        else
             return asset($this->thumbnail ? '/storage/' . $this->thumbnail : 'img/post-thumbnail.jpg');
-        }
-    }
-
-    /**
-     * A post belongs to a creator.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'user_id');
     }
 
     /**
      * A thread is assigned a category.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function category()
     {
@@ -116,7 +109,7 @@ class Post extends Model
     /**
      * A thread may have many comments.blade.php.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function comments()
     {
@@ -124,9 +117,29 @@ class Post extends Model
     }
 
     /**
+     * A post is created by a particular user.
+     *
+     * @return BelongsTo
+     */
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /**
+     * A post is updated by a particular user.
+     *
+     * @return BelongsTo
+     */
+    public function updator()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    /**
      * Add a comment to the post.
      *
-     * @param  array $comment
+     * @param array $comment
      * @return Model
      */
     public function addComment($comment)
@@ -141,8 +154,8 @@ class Post extends Model
     /**
      * Apply all relevant $post filters.
      *
-     * @param  Builder       $query
-     * @param  PostFilters $filters
+     * @param Builder $query
+     * @param PostFilters $filters
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
@@ -154,9 +167,9 @@ class Post extends Model
     /**
      * Determine if the post has been updated since the user last read it.
      *
-     * @param  User $user
+     * @param User $user
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     public function hasUpdatesFor($user)
     {
@@ -178,7 +191,7 @@ class Post extends Model
     /**
      * Access the body attribute.
      *
-     * @param  string $body
+     * @param string $body
      *
      * @return string
      */
@@ -194,9 +207,10 @@ class Post extends Model
      */
     public function setSlugAttribute($value)
     {
-        if (static::whereSlug($slug = str_slug($value))->exists()) {
+        $value = Str::slug($value);
+
+        if (static::whereSlug($slug = $value)->exists())
             $slug = "{$slug}-{$this->id}";
-        }
 
         $this->attributes['slug'] = $slug;
     }

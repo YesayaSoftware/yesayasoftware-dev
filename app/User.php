@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Traits\FormatsDates;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Passport\HasApiTokens;
 use App\Notifications\VerifyEmailQueued;
 use Illuminate\Notifications\Notifiable;
@@ -11,6 +12,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
  * @method static limit(int $int)
+ * @method static create(array $array)
+ * @method static where(string $string, $email)
+ * @method static whereEmail($email)
  */
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -44,6 +48,9 @@ class User extends Authenticatable implements MustVerifyEmail
         'created_at' => 'date',
     ];
 
+    /**
+     *
+     */
     public function sendEmailVerificationNotification()
     {
         $this->notify(new VerifyEmailQueued);
@@ -52,7 +59,7 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * User may have a number of Posts
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function posts()
     {
@@ -62,7 +69,7 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * User may have a number of Comments
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function comments()
     {
@@ -72,7 +79,7 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * User may have a number of Categories
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function categories()
     {

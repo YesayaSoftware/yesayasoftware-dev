@@ -7,6 +7,7 @@ use App\Filters\PostFilters;
 use App\Post;
 use App\PostTrending;
 use App\User;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -95,6 +96,8 @@ class PostController extends Controller
      * Store a newly created resource in storage.
      *
      *
+     * @param Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -163,7 +166,7 @@ class PostController extends Controller
      * @param Post $post
      *
      * @return Post
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
     public function update(Request $request, Post $post)
     {
@@ -183,7 +186,7 @@ class PostController extends Controller
      * @param Post $post
      *
      * @return mixed
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
     public function destroy(Post $post)
     {

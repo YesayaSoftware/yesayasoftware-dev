@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 trait RecordsActivity
 {
@@ -50,7 +51,7 @@ trait RecordsActivity
     /**
      * Fetch the activity relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     * @return MorphMany
      */
     public function activity()
     {

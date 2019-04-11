@@ -4,6 +4,8 @@ namespace App;
 
 use App\Traits\FormatsDates;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @method static create(array $array)
@@ -22,7 +24,8 @@ class Category extends Model
         'slug',
         'name',
         'description',
-        'user_id'
+        'created_by',
+        'updated_by'
     ];
 
     /**
@@ -30,7 +33,7 @@ class Category extends Model
      *
      * @var array
      */
-    protected $with = ['user'];
+    protected $with = ['creator'];
 
     /**
      * Get the route key name for Laravel.
@@ -55,7 +58,7 @@ class Category extends Model
     /**
      * A channel consists of threads.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function posts()
     {
@@ -63,12 +66,22 @@ class Category extends Model
     }
 
     /**
-     * A post belongs to a creator.
+     * A post is created by a particular user.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function user()
+    public function creator()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /**
+     * A post is updated by a particular user.
+     *
+     * @return BelongsTo
+     */
+    public function updator()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
     }
 }

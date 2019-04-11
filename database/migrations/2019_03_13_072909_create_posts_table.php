@@ -24,19 +24,14 @@ class CreatePostsTable extends Migration
             $table->unsignedInteger('visits')->default(0);
 
             $table->unsignedInteger('category_id');
-            $table->unsignedInteger('user_id');
+            $table->unsignedInteger('created_by');
+            $table->unsignedInteger('updated_by')->nullable();
 
             $table->timestamps();
 
-            $table->foreign('category_id')
-                ->references('id')
-                ->on('categories')
-                ->onDelete('cascade');
-
-            $table->foreign('user_id')
-                ->references('id')
-                ->on('users')
-                ->onDelete('cascade');
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('updated_by')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
