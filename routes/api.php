@@ -15,7 +15,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('posts', 'Api\PostController@index');
+Route::get('posts', 'Api\PostController@index');
+Route::middleware('auth:api')->get('auth/posts', 'Api\PostController@index');
 
 Route::get('categories', 'Api\CategoryController@index')->middleware('auth:api');
 Route::post('categories', 'Api\CategoryController@store')->middleware('auth:api');
