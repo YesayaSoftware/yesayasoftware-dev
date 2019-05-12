@@ -97,7 +97,7 @@ class Post extends Model
     }
 
     /**
-     * A thread is assigned a category.
+     * A post belongs a category.
      *
      * @return BelongsTo
      */
